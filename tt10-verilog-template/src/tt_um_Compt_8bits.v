@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 31.01.2025 23:42:11
+// Create Date: 01/27/2025 04:51:59 PM
 // Design Name: 
-// Module Name: tt_um_Compt_8bits
+// Module Name: tt_um_Vcompt
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,28 +19,24 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module tt_um_Compt_8bits(
-        input wire clk ,
-        input wire rst ,
-        output wire [7:0] cmpt 
-    );
-    
-    
-    reg [7:0] r_cmpt  ;
-    always@(posedge clk)
-     begin 
-        if (rst) 
-            begin 
-                r_cmpt=0;
-            end
-        else 
-            begin 
-        r_cmpt = r_cmpt+1;
-             if (r_cmpt>=255 ) begin 
-                r_cmpt = 0;
-            end   
-       end 
-     end    
-    assign cmpt = r_cmpt;
+    input clk,         // Clock input
+    input rst,         // Reset input
+    output [7:0] cmpt  // 8-bit counter output
+);
+
+reg [7:0] cc;  // 8-bit register to hold the counter value
+
+always @(posedge clk or posedge rst) begin
+    if (rst) begin
+        cc <= 8'b00000000;  // Reset counter to 0
+    end else if (cc == 8'b11111111) begin
+        cc <= 8'b00000000;  // Reset counter to 0 when it reaches 255
+    end else begin
+        cc <= cc + 1;  // Increment counter by 1
+    end
+end
+
+assign cmpt = cc;  // Output the current counter value
+
 endmodule
